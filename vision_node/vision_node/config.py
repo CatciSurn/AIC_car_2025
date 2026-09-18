@@ -23,6 +23,7 @@ YOLO_MODEL_PATH: str
 YOLO_FONT_PATH: str
 YOLO_SAVE_DIR: str
 YOLO_MODELS: Dict[str, str]
+YOLO_LABELS: Dict[int, str]
 
 
 def _build_ocr_model_config(base_dir: Path, variant: str) -> Dict[str, object]:
@@ -125,6 +126,13 @@ def configure_paths(src_dir: Optional[str]) -> str:
             raise ValueError(f"指定的 vision_node 源码目录不存在: {candidate}")
         _apply_base_dir(candidate)
     return VISION_NODE_SRC_DIR
+
+
+# 自定义YOLO标签（vision_gazebo 使用）
+YOLO_LABELS: Dict[int, str] = {
+    0: "社区内人员",
+    1: "非社区人员",
+}
 
 # 初始化默认配置
 _apply_base_dir(_DEFAULT_SRC_DIR)

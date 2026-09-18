@@ -94,15 +94,9 @@ class VisionNode(Node):
         # 自定义YOLO标签 - 使用配置文件
         self.custom_labels = config.YOLO_LABELS
         
-        # 初始化PaddleOCR - 使用配置文件中的模型
-        try:
-            self.ocr_engine = self._paddleocr_ctor(**config.CURRENT_MODEL, show_log=False)
-            self.get_logger().info("PaddleOCR引擎加载成功 - 使用模型:")
-            self.get_logger().info(f"  检测模型: {config.CURRENT_MODEL['det_model_dir']}")
-            self.get_logger().info(f"  识别模型: {config.CURRENT_MODEL['rec_model_dir']}")
-        except Exception as e:
-            self.get_logger().error(f"PaddleOCR引擎加载失败: {e}")
-            self.ocr_engine = None
+        # PaddleOCR 延迟初始化，避免启动时加载大模型
+        self.ocr_engine = None
+        self._ocr_init_attempted = False
         
         self.ocr_save_dir = config.OCR_SAVE_DIR
         os.makedirs(self.ocr_save_dir, exist_ok=True)
@@ -120,7 +114,35 @@ class VisionNode(Node):
                 sys.path.insert(0, path)
 
         if not os.path.isdir(ocr_dir):
-            raise RuntimeError(f"未找到 PaddleOCR 目录: {ocr_dir}")
+            self.get_logger().warn(f"未找到本地 PaddleOCR 目录: {ocr_dir}，将使用已安装的 paddleocr 包")
+
+    def _ensure_ocr_engine(self):
+        """延迟初始化OCR引擎，仅在首次调用时加载"""
+        if self.ocr_engine is not None:
+            return True
+
+        if self._ocr_init_attempted:
+            return False
+
+        self._ocr_init_attempted = True
+
+        try:
+            self.get_logger().info("正在初始化PaddleOCR引擎...")
+            ocr_config = config.CURRENT_MODEL.copy()
+
+            if "rec_char_dict_path" in ocr_config:
+                dict_path = ocr_config["rec_char_dict_path"]
+                if not os.path.exists(dict_path):
+                    self.get_logger().warn("指定的字典文件不存在，将使用PaddleOCR默认字典")
+                    del ocr_config["rec_char_dict_path"]
+
+            self.ocr_engine = self._paddleocr_ctor(**ocr_config)
+            self.get_logger().info("PaddleOCR引擎加载成功")
+            return True
+        except Exception as e:
+            self.get_logger().error(f"PaddleOCR引擎加载失败: {e}")
+            self.ocr_engine = None
+            return False
     
     # Camera1 回调函数
     def camera1_image_callback(self, msg):
@@ -262,7 +284,7 @@ class VisionNode(Node):
         """OCR识别服务回调函数 - 同时处理camera1和camera2"""
         self.get_logger().info("开始OCR识别...")
         
-        if self.ocr_engine is None:
+        if not self._ensure_ocr_engine():
             response.success = False
             response.message = "OCR引擎未加载"
             return response

@@ -49,6 +49,9 @@ ros2 launch ros2_tools tools_gazebo.launch.py
 ros2 run vision_node vision_gazebo
 
 # 启动导航
+source /opt/ros/humble/setup.bash
+source ~/utils/ros2_rust/install/setup.bash
+source ~/AIC_car_2025/install/setup.bash
 ros2 run navi_rs navi_rs
 ```
 
@@ -65,6 +68,9 @@ ros2 run vision_node vision_real
 ros2 run yolip yolip
 
 # 启动导航
+source /opt/ros/humble/setup.bash
+source ~/utils/ros2_rust/install/setup.bash
+source ~/AIC_car_2025/install/setup.bash
 ros2 run navi_rs navi_rs
 ```
 

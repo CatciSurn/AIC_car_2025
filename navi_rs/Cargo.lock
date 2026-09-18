@@ -18,6 +18,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
+name = "ament_rs"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b901da946b7b1620d44563e10c7634681af855a7f5fb59bd09b6eb801dcf6e49"
+dependencies = [
+ "itertools",
+ "walkdir",
+]
+
+[[package]]
 name = "anyhow"
 version = "1.0.100"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -206,7 +216,7 @@ dependencies = [
 
 [[package]]
 name = "builtin_interfaces"
-version = "1.2.2"
+version = "1.2.3"
 dependencies = [
  "rosidl_runtime_rs",
 ]
@@ -243,6 +253,12 @@ name = "crossbeam-utils"
 version = "0.8.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
+
+[[package]]
+name = "either"
+version = "1.18.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "252afb9ae5eaa683babdc6a068b3f5726eb19e05070c731f9b2a23a7c3e8ed34"
 
 [[package]]
 name = "errno"
@@ -391,7 +407,7 @@ dependencies = [
 
 [[package]]
 name = "geometry_msgs"
-version = "4.9.0"
+version = "4.9.2"
 dependencies = [
  "builtin_interfaces",
  "rosidl_runtime_rs",
@@ -446,6 +462,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "itertools"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f56a2d0bc861f9165be4eb3442afd3c236d8a98afd426f65d92324ae1091a484"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "js-sys"
 version = "0.3.81"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -469,6 +494,16 @@ name = "libc"
 version = "0.2.176"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "58f929b4d672ea937a23a1ab494143d968337a5f47e56d0815df1e0890ddf174"
+
+[[package]]
+name = "libloading"
+version = "0.8.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d7c4b02199fee7c5d21a5ae7d8cfa79a6ef5bb2fc834d6e9058e89c825efdc55"
+dependencies = [
+ "cfg-if",
+ "windows-link",
+]
 
 [[package]]
 name = "linux-raw-sys"
@@ -608,13 +643,15 @@ checksum = "69cdb34c158ceb288df11e18b4bd39de994f6657d83847bdffdbd7f346754b0f"
 
 [[package]]
 name = "rclrs"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
+ "ament_rs",
  "async-std",
  "async-stream",
  "cfg-if",
  "futures",
  "futures-lite",
+ "libloading",
  "rosidl_runtime_rs",
  "rustflags",
  "tokio",
@@ -631,7 +668,7 @@ dependencies = [
 
 [[package]]
 name = "rosidl_runtime_rs"
-version = "0.5.0"
+version = "0.6.1"
 dependencies = [
  "cfg-if",
 ]
@@ -668,6 +705,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
 
 [[package]]
+name = "same-file"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
+dependencies = [
+ "winapi-util",
+]
+
+[[package]]
 name = "slab"
 version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -675,7 +721,7 @@ checksum = "7a2ae44ef20feb57a68b23d846850f861394c2e02dc425a50098ae8c90267589"
 
 [[package]]
 name = "std_msgs"
-version = "4.9.0"
+version = "4.9.2"
 dependencies = [
  "builtin_interfaces",
  "rosidl_runtime_rs",
@@ -764,6 +810,16 @@ name = "value-bag"
 version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "943ce29a8a743eb10d6082545d861b24f9d1b160b7d741e0f2cdf726bec909c5"
+
+[[package]]
+name = "walkdir"
+version = "2.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
+dependencies = [
+ "same-file",
+ "winapi-util",
+]
 
 [[package]]
 name = "wasi"
@@ -863,6 +919,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "winapi-util"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
+dependencies = [
+ "windows-sys 0.61.1",
+]
+
+[[package]]
 name = "windows-link"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -955,115 +1020,3 @@ name = "wit-bindgen"
 version = "0.46.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f17a85883d4e6d00e8a97c586de764dabcc06133f7f1d55dce5cdc070ad7fe59"
-
-[[patch.unused]]
-name = "action_msgs"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "actionlib_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "composition_interfaces"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "diagnostic_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "example_interfaces"
-version = "0.9.3"
-
-[[patch.unused]]
-name = "examples_logging_demo"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "examples_parameter_demo"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "examples_rclrs_message_demo"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "examples_rclrs_minimal_client_service"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "examples_rclrs_minimal_pub_sub"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "examples_worker_demo"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "lifecycle_msgs"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "nav_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "navi_rs"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "rcl_interfaces"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "rclrs_example_msgs"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "realsense2_camera_msgs"
-version = "4.56.4"
-
-[[patch.unused]]
-name = "rosgraph_msgs"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "rust_pubsub"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "sensor_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "shape_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "statistics_msgs"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "std_srvs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "stereo_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "test_msgs"
-version = "1.2.2"
-
-[[patch.unused]]
-name = "trajectory_msgs"
-version = "4.9.0"
-
-[[patch.unused]]
-name = "unique_identifier_msgs"
-version = "2.2.1"
-
-[[patch.unused]]
-name = "visualization_msgs"
-version = "4.9.0"

@@ -4,6 +4,17 @@ from launch.actions import ExecuteProcess, TimerAction
 from launch.substitutions import Command
 import os
 
+def _gazebo_env():
+    # 虚拟机(VirtualBox)的 vmwgfx 虚拟显卡驱动渲染 Gazebo 会黑屏，强制使用软件渲染
+    try:
+        with open('/sys/devices/virtual/dmi/id/product_name', 'r') as f:
+            product_name = f.read().strip()
+    except OSError:
+        return {}
+    if 'VirtualBox' in product_name:
+        return {'LIBGL_ALWAYS_SOFTWARE': '1'}
+    return {}
+
 def generate_launch_description():
     pkg_path = os.path.dirname(os.path.abspath(__file__))
     world_file = os.path.join(pkg_path, '..', 'worlds', 'empty.world')
@@ -33,6 +44,7 @@ def generate_launch_description():
             '-s', 'libgazebo_ros_init.so',
             world_file,
         ],
+        additional_env=_gazebo_env(),
         output='screen'
     )
 

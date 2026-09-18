@@ -128,6 +128,17 @@ fn format_plate_for_tts(raw: &str) -> String {
     }
 }
 
+fn speak(
+    navi_node: &navi::NaviSubNode,
+    executor: &mut rclrs::Executor,
+    text: &str,
+    timeout: Duration,
+) {
+    if let Err(err) = navi_node.call_tts_blocking(executor, text, timeout) {
+        log_info!("navi_main", "TTS 调用失败，忽略并继续导航: {:?}", err);
+    }
+}
+
 fn main() -> anyhow::Result<()> {
     let context = rclrs::Context::default_from_env()?;
     let mut executor = context.create_basic_executor();
@@ -136,7 +147,8 @@ fn main() -> anyhow::Result<()> {
     let navi_node = navi::NaviSubNode::new(&executor, "navigator", "lidar_data")?;
     let mut vision_result_blocka = VisionResult::new();
 
-    let _ = navi_node.call_tts_blocking(
+    speak(
+        &navi_node,
         &mut executor,
         "语音合成神经网络初始化成功",
         Duration::from_secs(20),
@@ -401,7 +413,7 @@ fn main() -> anyhow::Result<()> {
 
     // 使用 format! 重新赋值
     let tts_text = format!("{}发现火灾隐患{}个", tts_building, fire_building);
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(10))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(10));
 
     let waypoints = vec![
         Pos {
@@ -491,7 +503,7 @@ fn main() -> anyhow::Result<()> {
 
     // 使用 format! 重新赋值
     let tts_text = format!("{}发现火灾隐患{}个", tts_building, fire_building);
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(10))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(10));
 
     // Block B Summary
     log_info!(
@@ -513,7 +525,7 @@ fn main() -> anyhow::Result<()> {
         "社区内共有{}人，其中诶街人数{}人，比街人数{}人，发现{}名非社区人员在诶街，发现{}名非社区人员在比街，图片已保存。",
         people_sum, people_sum_a, people_sum_b, bad_people_a, bad_people_b
     );
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(20))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(20));
 
     let mut vision_result_block_parking = VisionResult::new();
 
@@ -582,7 +594,7 @@ fn main() -> anyhow::Result<()> {
 
     let plate_tts = format_plate_for_tts(&car_number);
     let tts_text = format!("1号停车场车牌号为{}", plate_tts);
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(10))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(10));
 
     let waypoints = vec![Pos {
         translation: CoordUnit(0.6, 2.8, 0.0),
@@ -614,7 +626,7 @@ fn main() -> anyhow::Result<()> {
 
     let plate_tts = format_plate_for_tts(&car_number);
     let tts_text = format!("2号停车场车牌号为{}", plate_tts);
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(10))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(10));
 
     sleep(std::time::Duration::from_secs_f32(1.0));
 
@@ -668,7 +680,7 @@ fn main() -> anyhow::Result<()> {
 
     let plate_tts = format_plate_for_tts(&car_number);
     let tts_text = format!("3号停车场车牌号为{}", plate_tts);
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(10))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(10));
 
     let waypoints = vec![Pos {
         translation: CoordUnit(0.6, 1.5, 0.0),
@@ -718,7 +730,7 @@ fn main() -> anyhow::Result<()> {
 
     // 使用 format! 重新赋值
     let tts_text = format!("{}发现火灾隐患{}个", tts_building, fire_building);
-    navi_node.call_tts_blocking(&mut executor, &tts_text, Duration::from_secs(10))?;
+    speak(&navi_node, &mut executor, &tts_text, Duration::from_secs(10));
 
     vision::run_yolo_detection(
         &navi_node,
